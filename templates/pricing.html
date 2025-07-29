@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login and Sign-up Forms</title>
+<style>
+  * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #c850c0, #4158d0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-attachment: fixed;
+  backdrop-filter: blur(8px);
+}
+
+.form-container {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 45px 35px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-container:hover {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 28px;
+  font-weight: 700;
+  font-size: 26px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container textarea,
+.form-container select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container textarea:focus,
+.form-container select:focus {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.form-container input::placeholder,
+.form-container textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-container button {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #ff6ec4, #7873f5);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-container button:hover {
+  background: linear-gradient(135deg, #7873f5, #ff6ec4);
+  transform: scale(1.02);
+}
+
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+}
+
+.success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.error {
+  background-color: #f44336;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+#paragraph {
+  display: none;
+}
+
+#buy_credits {
+  margin-top: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#buy_credits:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+</style>
+
+</head>
+<body>
+  <div class="form-container">
+    <h2>Pricing</h2>
+    <p>Select the desired pricing tier:</p>
+    <form id="buy-credits-form" action="/buy_credits/" method="post">
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="basic" name="pricing_tier" value="basic" />
+        <label for="basic">Basic ($50)</label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="standard" name="pricing_tier" value="standard" />
+        <label for="standard">Standard ($100)</label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="premium" name="pricing_tier" value="premium" />
+        <label for="premium">Premium ($200)</label>
+      </div>
+      <input type="submit" id="buy-credits-btn" value="Buy Credits" />
+    </form>
+    <div id="notification" class="hidden">
+      <span id="notification-message"></span>
+    </div>
+  </div>
+
+  <script>
+document.getElementById("buy-credits-form").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevent form submission
+    const formData = new FormData(this);
+    const email = formData.get('email'); // Get the email from the form data
+
+    // Proceed with buying credits
+    const token = localStorage.getItem("access_token"); // Retrieve the access token from localStorage
+    const response = await fetch("/buy_credits/", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`, // Use the retrieved access token
+        },
+        body: formData,
+    });
+    const data = await response.json();
+    if (response.ok) {
+        // Show success message
+        const message = data.message + "\nNew Credits: " + data.new_credits;
+        alert(message);
+        // Redirect to client.html
+        window.location.href = '/client;                                                                                                                                                                                                                                                                                                                                                                                                       ';
+    } else {
+        // Show error message
+        alert("Error: Unable to buy credits. Please try again later.");
+    }
+});
+</script>
+
+
+</body>
+</html>

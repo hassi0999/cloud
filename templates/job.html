@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Submission Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:rgb(204, 29, 29);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label, input, select, textarea {
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Job Submission Form</h2>
+        <form id="job-form">
+            <label for="job_title">Job Title:</label><br>
+            <input type="text" id="job_title" name="job_title"><br>
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description"></textarea><br>
+            <label for="deadline">Deadline:</label><br>
+            <input type="datetime-local" id="deadline" name="deadline"><br>
+            <label for="priority">Priority:</label><br>
+            <select id="priority" name="priority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select><br><br>
+            <input type="submit" value="Submit Job">
+        </form>
+    </div>
+
+    <script>
+        async function submitJob(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const jobTitle = document.getElementById('job_title').value;
+            const description = document.getElementById('description').value;
+            const deadline = document.getElementById('deadline').value;
+            const priority = document.getElementById('priority').value;
+
+            const formData = {
+                job_title: jobTitle,
+                description: description,
+                deadline: deadline,
+                priority: priority
+            };
+
+            try {
+                const response = await fetch('/submit_job/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    // Job submitted successfully
+                    alert('Job submitted successfully!');
+                } else {
+                    // Error handling
+                    const responseData = await response.json();
+                    alert(`Error: ${responseData.detail}`);
+                }
+            } catch (error) {
+                console.error('Error during job submission:', error);
+            }
+        }
+
+        // Add event listener to the form submission
+        document.getElementById('job-form').addEventListener('submit', submitJob);
+    </script>
+</body>
+</html>

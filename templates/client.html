@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Job Submission</title>
+    <style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #1f4037, #99f2c8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background-attachment: fixed;
+}
+
+.form-container {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-container:hover {
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 26px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.form-container label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+  color: #f1f1f1;
+  font-weight: 500;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container textarea,
+.form-container select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  outline: none;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.form-container input:focus,
+.form-container textarea:focus,
+.form-container select:focus {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.form-container input::placeholder,
+.form-container textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-container button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  border: none;
+  border-radius: 12px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  font-size: 16px;
+}
+
+.form-container button:hover {
+  background: linear-gradient(135deg, #38f9d7, #43e97b);
+  transform: scale(1.02);
+}
+
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: none;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.error {
+  background-color: #f44336;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+#paragraph {
+  display: none;
+  color: #fff;
+  font-size: 15px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#buy_credits {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  font-size: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+#buy_credits:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+</style>
+  </head>
+  <body>
+    <h3 ></h3>
+    <div id="login-form" class="form-container">
+      <h2>Login For Client</h2>
+      <input type="text" id="login-email" placeholder="Email" required />
+      <input
+        type="password"
+        id="login-password"
+        placeholder="Password"
+        required
+      />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="signup-form" class="form-container hidden">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-name" placeholder="Full Name" required />
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input
+        type="password"
+        id="signup-password"
+        placeholder="Password"
+        required
+      />
+      <button onclick="signup()">Sign Up</button>
+    </div>
+
+    <div id="job-form" class="form-container hidden">
+      <h2>Submit Job</h2>
+      <input
+        type="text"
+        id="job-title"
+        placeholder="Job Title"
+        required
+        name="job_title"
+      />
+      <textarea
+        id="job-description"
+        placeholder="Job Description"
+        col="2"
+        row="7"
+        required
+        name="description"
+      ></textarea>
+      <button onclick="fetchDescription()">Generate Description With AI</button>
+      <!-- Changed button text -->
+      <input
+        type="text"
+        id="job-email"
+        placeholder="Email"
+        required
+        name="email"
+      />
+      <input type="datetime-local" id="job-deadline" required name="deadline" />
+      <select id="job-priority" required name="priority">
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <button onclick="submitJob()">Submit</button>
+
+      <a href="/" target="">
+        <button id="buy_credits">Buy Credit</button>
+      </a>
+    </div>
+
+    <div id="job-results" class="hidden">
+      <h2>Job Results</h2>
+      <div id="result-container"></div>
+    </div>
+
+    <div id="notification" class="hidden">
+      <span id="notification-message"></span>
+      <a id="buy-credits-link" href="#" class="hidden">Buy Credits</a>
+    </div>
+
+    <!--<div style="text-align: center; margin-top: 20px">
+      
+    </div>
+  -->
+    <script>
+      function showParagraph() {
+        var paragraph = document.getElementById("paragraph");
+        paragraph.style.display = "block";
+      }
+      // Update the login function to store the access token and expiration time
+      async function login() {
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        if (!email || !password) {
+          showNotification(
+            "Please fill in both email and password fields",
+            "error"
+          );
+          return;
+        }
+
+        try {
+          const formData = new FormData();
+          formData.append("email", email);
+          formData.append("password", password);
+
+          const response = await fetch("/login/", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const accessToken = data.access_token;
+            const tokenExpiration = new Date(data.token_expiration);
+
+            // Store the access token and expiration time in local storage
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("tokenExpiration", tokenExpiration);
+
+            // Hide the login form
+            document.getElementById("login-form").classList.add("hidden");
+
+            // Show the job submission form
+            document.getElementById("job-form").classList.remove("hidden");
+            document.getElementById("job-results").classList.add("hidden");
+          } else {
+            // Show error notification for incorrect email or password
+            showNotification("Incorrect email or password", "error");
+          }
+        } catch (error) {
+          console.error("Error during login:", error);
+        }
+      }
+
+      async function submitJob() {
+        const accessToken = localStorage.getItem("accessToken");
+        const tokenExpiration = new Date(
+          localStorage.getItem("tokenExpiration")
+        );
+
+        if (!accessToken || new Date() > tokenExpiration) {
+          // If access token is missing or expired, show token expired message
+          showNotification("Token expired. Please log in again.", "error");
+          return;
+        }
+
+        // Continue with job submission
+        const jobTitle = document.getElementById("job-title").value;
+        const jobDescription = document.getElementById("job-description").value;
+        const email = document.getElementById("job-email").value;
+        const deadline = document.getElementById("job-deadline").value;
+        const priority = document.getElementById("job-priority").value;
+
+        // Make sure all required fields are filled
+        if (!jobTitle || !jobDescription || !email || !deadline || !priority) {
+          showNotification("Please fill in all fields", "error");
+          return;
+        }
+
+        try {
+          // Make POST request to backend API for job submission
+          const formData = new FormData();
+          formData.append("job_title", jobTitle);
+          formData.append("description", jobDescription);
+          formData.append("email", email);
+          formData.append("deadline", deadline);
+          formData.append("priority", priority);
+
+          const response = await fetch("/submit_job/", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: formData,
+          });
+
+          if (response.ok) {
+            // Show success notification
+            showNotification("Job submitted successfully!", "success");
+          } else if (response.status === 403) {
+            // Show insufficient credits message
+            const data = await response.json();
+            const message = `${data.message}  `;
+
+            alert(message);
+          } else {
+            // Show error notification
+            showNotification(
+              "Error: Something went wrong. Please try again later.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error during job submission:", error);
+        }
+      }
+
+      function showNotification(message, type) {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+
+        // Set background color based on notification type
+        notification.style.backgroundColor =
+          type === "success" ? "#4CAF50" : "#f44336";
+
+        // Show notification
+        notification.style.display = "block";
+
+        // Hide notification after 3 seconds (adjust duration as needed)
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 3000);
+      }
+      async function completeWithAI() {
+        const jobTitle = document.getElementById("job-title").value; // Get job title from input field
+
+        try {
+          const response = await fetch("/complete/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt: jobTitle }), // Send job title as prompt in the request body
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const completionResult = data.result; // Extract completed text from response
+            // Display completed text on the webpage, you can choose how to display it, for example:
+            alert("AI completion result:\n" + completionResult);
+          } else {
+            // Handle error responses
+            console.error("Error:", response.statusText);
+            alert("Error fetching AI completion");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error fetching AI completion");
+        }
+      }
+      async function fetchDescription() {
+        const user_input = document.getElementById("job-title").value;
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append(
+          "Authorization",
+          "Bearer cc74712f-beba-4a51-8daf-e1dfbea90b5e"
+        );
+
+        const requestBody = {
+          model: "jamba-large-1.6", // Or jamba-mini-1.6 if needed
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an AI assistant for business research. Your responses should be informative and concise.",
+            },
+            {
+              role: "user",
+              content: user_input,
+            },
+          ],
+          max_tokens: 2048,
+          temperature: 0.4,
+          top_p: 1,
+          response_format: { type: "text" },
+        };
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify(requestBody),
+          redirect: "follow",
+        };
+
+        try {
+          const response = await fetch(
+            "https://api.ai21.com/studio/v1/chat/completions",
+            requestOptions
+          );
+          const result = await response.json();
+
+          // Check if result contains the expected structure
+          if (
+            result &&
+            result.choices &&
+            result.choices.length > 0 &&
+            result.choices[0].message &&
+            result.choices[0].message.content
+          ) {
+            document.getElementById("job-description").value =
+              result.choices[0].message.content;
+          } else {
+            console.error("Unexpected response format:", result);
+            document.getElementById("job-description").value =
+              "Could not fetch a valid response.";
+          }
+        } catch (error) {
+          console.error("Error fetching description:", error);
+          document.getElementById("job-description").value =
+            "Failed to fetch job description.";
+        }
+
+        console.log("fetchDescription() called");
+      }
+    </script>
+  </body>
+</html>
